@@ -1,14 +1,34 @@
-const height = 500;
+const height = 7000;
 const width = 1100;
 const padding = 40;
 
 const svg = d3.select("#svg");
+var path = d3.geoPath();
 
 fetch(
-  "https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/for_user_education.json"
+  "https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/counties.json"
 )
   .then((response) => response.json())
-  .then((data) => console.log(data));
+  .then((countyData) => {
+    const counties = topojson.feature(countyData, countyData.objects.counties)
+      .features;
+    fetch(
+      "https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/for_user_education.json"
+    )
+      .then((response) => response.json())
+      .then((educationData) => {
+        // console.log(counties);
+        console.log(educationData);
+        svg
+          .selectAll("path")
+          .data(counties)
+          .enter()
+          .append("path")
+          .attr("d", path)
+          .attr("class", "county")
+          .attr("fill", (d) => console.log(d));
+      });
+  });
 
 /*
 const path = d3.geoPath(); //the method that does the actual drawing, which you'll call later
